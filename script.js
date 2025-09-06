@@ -1,18 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Select essential DOM elements
+    // Selecting of essential DOM elements
     const form = document.getElementById('regForm');
     const cardsContainer = document.getElementById('cards');
     const tableBody = document.querySelector('#summaryTable tbody');
 
     // --- FORM SUBMISSION HANDLER ---
     form.addEventListener('submit', (event) => {
-        // Prevent the default browser action of reloading the page
         event.preventDefault(); 
         
         // --- 1. VALIDATION ---
         const isValid = validateForm();
 
-        // If the form is not valid, stop the function here
         if (!isValid) {
             document.getElementById('live-feedback').textContent = "Please fix the errors before submitting.";
             return;
@@ -20,16 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('live-feedback').textContent = "";
 
         // --- 2. DATA COLLECTION ---
-        // Gather all the form data into an object
         const formData = {
-            id: 'student-' + Date.now(), // Create a unique ID for linking card and row
+            id: 'student-' + Date.now(), 
             firstName: form.elements.firstName.value.trim(),
             lastName: form.elements.lastName.value.trim(),
             email: form.elements.email.value.trim(),
             programme: form.elements.programme.value.trim(),
             year: form.elements.year.value,
             interests: form.elements.interests.value.trim().split(',').map(item => item.trim()),
-            photoUrl: form.elements.photoUrl.value.trim() || 'https://placehold.co/100', // Default image
+            photoUrl: form.elements.photoUrl.value.trim() || 'https://placehold.co/100',
         };
 
         // --- 3. DYNAMIC ELEMENT CREATION ---
@@ -42,19 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- VALIDATION LOGIC ---
     function validateForm() {
         let allValid = true;
-        // Validate required text fields
         allValid = validateRequired('firstName') && allValid;
         allValid = validateRequired('lastName') && allValid;
         allValid = validateRequired('programme') && allValid;
-        // Validate email format
         allValid = validateEmail('email') && allValid;
-        // Validate radio button selection
         allValid = validateRadio('year') && allValid;
 
         return allValid;
     }
 
-    // Helper function for required text fields
+
     function validateRequired(fieldId) {
         const input = form.elements[fieldId];
         const errorEl = document.getElementById(`err-${fieldId}`);
@@ -66,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // Helper function for email validation using a simple regex
+    //  function for email validation using a simple regex
     function validateEmail(fieldId) {
         const input = form.elements[fieldId];
         const errorEl = document.getElementById(`err-${fieldId}`);
@@ -79,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
     
-    // Helper function for radio button group validation
+    // function for radio button group validation
     function validateRadio(groupName) {
         const radioGroup = form.elements[groupName];
         const errorEl = document.getElementById(`err-${groupName}`);
@@ -94,10 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNCTION TO ADD STUDENT TO CARD AND TABLE ---
     function addStudent(data) {
-        // --- Create Profile Card ---
         const card = document.createElement('div');
         card.className = 'card';
-        card.id = data.id; // Assign the unique ID
+        card.id = data.id; 
 
         card.innerHTML = `
             <button class="remove-btn" title="Remove Student">X</button>
@@ -111,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- Create Table Row ---
         const row = document.createElement('tr');
-        row.id = `row-${data.id}`; // Assign a related unique ID
+        row.id = `row-${data.id}`; 
 
         row.innerHTML = `
             <td>${data.firstName} ${data.lastName}</td>
@@ -124,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- EVENT DELEGATION FOR REMOVE BUTTONS ---
-    // Listen for clicks on the containers instead of individual buttons
     cardsContainer.addEventListener('click', function(event) {
         if (event.target.classList.contains('remove-btn')) {
             const card = event.target.closest('.card');
@@ -135,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
     tableBody.addEventListener('click', function(event) {
         if (event.target.classList.contains('remove-btn-table')) {
             const row = event.target.closest('tr');
-            // Extract the original ID from the row's ID
             const studentId = row.id.replace('row-', '');
             removeStudent(studentId);
         }
@@ -143,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNCTION TO REMOVE STUDENT FROM CARD AND TABLE ---
     function removeStudent(studentId) {
-        // Find and remove the card
         const cardToRemove = document.getElementById(studentId);
         if (cardToRemove) {
             cardToRemove.remove();
